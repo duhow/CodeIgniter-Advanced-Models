@@ -689,6 +689,34 @@ class Prestashop extends CI_Model {
 		}
 		return $final;
 	}
+	
+	function get_last_payments($date = "-1 day", $date_end = NULL){
+		if(empty($date)){ $date = "yesterday"; }
+		if(is_numeric($date)){ $date = date("Y-m-d H:i:s", $date); }
+		elseif(strtotime($date) != FALSE){ $date = date("Y-m-d H:i:s", strtotime($date)); }
+
+		if(!empty($date_end)){
+			if(is_numeric($date_end)){ $date_end = date("Y-m-d H:i:s", $date_end); }
+			elseif(strtotime($date_end) != FALSE){ $date_end = date("Y-m-d H:i:s", strtotime($date_end)); }
+			$this->db->where('date_add <=', $date_end);
+		}
+		$query = $this->db
+			->where('date_add >=', $date)
+			->order_by('id_order_payment', 'ASC')
+		->get('order_payment');
+
+		if($query->num_rows() == 0){ return array(); }
+		return $query->result_array();
+	}
+
+	function get_last_payments_by_method($method, $date = "-1 day", $date_end = NULL){
+		if(!is_array($method)){
+			if(trim(strtolower($method)) == "paypal"){ $method = " PayPal  "; } // HACK
+			$method = [$method];
+		}
+		$this->db->where_in('payment_method', $method);
+		return $this->get_last_payments($date, $date_end);
+	}
 
 	function get_customer_by_date($date, $orders){
 		foreach($orders as $order){
