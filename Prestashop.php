@@ -689,7 +689,7 @@ class Prestashop extends CI_Model {
 		}
 		return $final;
 	}
-	
+
 	function get_last_payments($date = "-1 day", $date_end = NULL){
 		if(empty($date)){ $date = "yesterday"; }
 		if(is_numeric($date)){ $date = date("Y-m-d H:i:s", $date); }
@@ -1010,6 +1010,32 @@ class Prestashop extends CI_Model {
 
 			return $client;
 		}
+	}
+
+	function customer_address_dni($mail){
+		$client = $this->customer($mail);
+		if(empty($client)){ return FALSE; }
+		$addresses = $this->customer_addresses($client['id_customer'], true);
+
+		if($addresses){
+			$address = current($addresses);
+			if(!empty($address['dni'])){ return $address['dni']; }
+		}
+		return FALSE;
+	}
+
+	function customer_address_set_dni($mail, $dni){
+		if(!empty($mail)){
+			$client = $this->customer($mail);
+			if(empty($client)){ return FALSE; }
+
+			$this->db
+				->set('dni', $dni)
+				->where('id_customer', $client['id_customer'])
+			->update('address');
+			return ($this->db->affected_rows() > 0);
+		}
+		return FALSE;
 	}
 
 	function customer_create($name, $surname, $email, $passwd = NULL, $birthday = NULL, $gender = NULL, $optin = TRUE, $newsletter = TRUE, $groupid = 1, $extra = NULL){
