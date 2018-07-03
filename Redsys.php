@@ -22,7 +22,7 @@ class Redsys extends CI_Model {
 	}
 
 	function parse(){
-		
+
 	}
 
 	function reset($all = false){
@@ -35,7 +35,6 @@ class Redsys extends CI_Model {
 
 	function key($data = NULL){
 		if(!empty($data)){ $this->key = $data; }
-
 		return $this;
 	}
 
@@ -59,7 +58,23 @@ class Redsys extends CI_Model {
 		return $this->__process_data_generic('Ds_Merchant_MerchantData', $data);
 	}
 
+	function productDescription($data = NULL){
+		return $this->__process_data_generic('Ds_Merchant_ProductDescription', $data);
+	}
+
+	function clientName($data = NULL){
+		return $this->__process_data_generic('Ds_Merchant_Titular', $data);
+	}
+
+	function module($data = NULL){
+		return $this->__process_data_generic('Ds_Merchant_Module', $data);
+	}
+
 	// ----------------------------------------
+
+	function merchantName($data = NULL){
+		return $this->__process_data_generic('Ds_Merchant_MerchantName', $data);
+	}
 
 	function merchantURL($data = NULL){
 		return $this->__process_data_generic('Ds_Merchant_MerchantURL', $data);
@@ -115,13 +130,17 @@ class Redsys extends CI_Model {
 		return $this->__process_data_generic('Ds_Merchant_Identifier', $data);
 	}
 
+	function authCode($data = NULL){
+		return $this->__process_data_generic('Ds_Merchant_AuthorisationCode', $data);
+	}
+
 	function direct_payment($data = NULL){
 		if($data === NULL){ return $this->content['Ds_Merchant_DirectPayment']; }
 
 		if($data){ $this->content['Ds_Merchant_DirectPayment'] = "true"; }
 		elseif($data === FALSE){ $this->content['Ds_Merchant_DirectPayment'] = "false"; }
 		else{ $this->content['Ds_Merchant_DirectPayment'] = "false"; }
-		
+
 		return $this;
 	}
 
