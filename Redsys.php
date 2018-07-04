@@ -178,6 +178,13 @@ class Redsys extends CI_Model {
 	// -----------------------------------------------
 
 	function encrypt_3DES($message, $key){
+		if(function_exists('openssl_encrypt')){
+			$l = ceil(strlen($message) / 8) * 8;
+			$message = $message.str_repeat("\0", $l - strlen($message));
+
+			return substr(openssl_encrypt($message, 'des-ede3-cbc', $key, OPENSSL_RAW_DATA, "\0\0\0\0\0\0\0\0"), 0, $l);
+		}
+
 		// Se establece un IV por defecto
 		$bytes = array(0,0,0,0,0,0,0,0); //byte [] IV = {0, 0, 0, 0, 0, 0, 0, 0}
 		$iv = implode(array_map("chr", $bytes)); //PHP 4 >= 4.0.2
